@@ -10,6 +10,9 @@ var game_file_list = [
 	"libs/modules/res/res.js",
 	"bin-debug/LoadingUI.js",
 	"bin-debug/Main.js",
+	"bin-debug/logic/box.js",
+	"bin-debug/logic/map.js",
+	"bin-debug/logic/types.js",
 	//----auto game_file_list end----
 ];
 

@@ -27,8 +27,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+/// <reference path="./userEgret.d.ts" />
 class Main extends egret.DisplayObjectContainer {
-
     /**
      * 加载进度界面
      * Process interface loading
