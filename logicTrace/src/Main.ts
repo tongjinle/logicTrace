@@ -38,7 +38,7 @@ class Main extends egret.DisplayObjectContainer {
     public constructor() {
         super();
         console.log(123);
-        // console.log(_);
+        console.log(fun1('111'));
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
     }
 
