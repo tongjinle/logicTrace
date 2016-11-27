@@ -26,6 +26,7 @@
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
+/// <reference path="../libs/underscore/underscore.d.ts" />
 
 class Main extends egret.DisplayObjectContainer {
 
@@ -38,6 +39,7 @@ class Main extends egret.DisplayObjectContainer {
     public constructor() {
         super();
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
+        _.each([1, 2, 3], n => console.log(n));
     }
 
     private onAddToStage(event:egret.Event) {
