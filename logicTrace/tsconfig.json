@@ -1,20 +1,13 @@
 {
-	"compilerOptions": {
-		"sourceMap": true,
-		"declaration": true,
-		"target": "es5",
-		"moduleResolution": "node",
-		"noEmitOnError": true
-	},
-
-	"files": [
-
-	],
-	"include": [
-		"src/**/*.ts"
-	],
-
-	"exclude": [
-		"./node_modules"
-	]
+   "compilerOptions": {
+      "target": "es5",
+      "locale": "zh-CN",
+      "moduleResolution": "node"
+   },
+   "include": [
+      "src/**/*.ts"
+   ],
+   "exclude": [
+      "node_modules"
+   ]
 }

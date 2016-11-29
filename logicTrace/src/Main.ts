@@ -38,6 +38,8 @@ class Main extends egret.DisplayObjectContainer {
     public constructor() {
         super();
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
+        let bo = new Logic.BlankBox();
+        console.log(bo.id);
     }
 
     private onAddToStage(event:egret.Event) {

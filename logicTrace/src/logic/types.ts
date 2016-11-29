@@ -1,4 +1,4 @@
-export enum boxType{
+enum boxType{
 	// 源头格子,带数字的格子
 	source,
 	// 空白格子

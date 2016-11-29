@@ -8,11 +8,17 @@ var game_file_list = [
 	"libs/modules/game/game.native.js",
 	"libs/modules/tween/tween.js",
 	"libs/modules/res/res.js",
+	"libs/underscore/underscore.js",
 	"bin-debug/LoadingUI.js",
 	"bin-debug/Main.js",
-	"bin-debug/logic/box.js",
 	"bin-debug/logic/map.js",
+	"bin-debug/logic/box.js",
+	"bin-debug/logic/blankBox.js",
+	"bin-debug/logic/map2d.js",
+	"bin-debug/logic/paintedBox.js",
+	"bin-debug/logic/sourceBox.js",
 	"bin-debug/logic/types.js",
+	"bin-debug/logic/undefBox.js",
 	//----auto game_file_list end----
 ];
 

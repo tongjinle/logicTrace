@@ -1,12 +1,9 @@
-import api from 'map2d';
-import { boxType } from './types';
-import Box from './box';
+namespace Logic {
+	export class UndefBox extends Box {
 
-
-export default class UndefBox extends Box {
-
-	constructor() {
-		super();
-		this.type = boxType.undef;
+		constructor() {
+			super();
+			this.type = boxType.undef;
+		}
 	}
 }

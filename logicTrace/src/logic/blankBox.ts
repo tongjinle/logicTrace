@@ -1,12 +1,13 @@
-import api from 'map2d';
-import { boxType } from './types';
-import Box from './box';
+/// <reference path="./map.ts" />
 
-// 一个空格
-export default class BlankBox extends Box {
-	
-	constructor() {
-		super();
-		this.type = boxType.blank;
+namespace Logic {
+
+	// 一个空格
+	export class BlankBox extends Box {
+
+		constructor() {
+			super();
+			this.type = boxType.blank;
+		}
 	}
 }
