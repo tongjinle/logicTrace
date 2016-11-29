@@ -1,11 +1,11 @@
 namespace Logic {
 
- export	class Map {
+	export class Map {
 		boxList: Box[][];
 		constructor(public width: number, public height: number) {
 			let boxList = this.boxList = [];
 			this.visit((bo, x, y, list) => {
-				list[y][x] = Box.create(boxType.undef);
+				list[y][x] = Box.create(boxType.undef, { posi: { x, y } });
 				return true;
 			});
 
@@ -14,6 +14,11 @@ namespace Logic {
 			while (this.merge());
 
 		}
+
+		private log(...arg) {
+			console.log.apply(null, arg);
+		}
+
 
 		private visit(fn: (bo: Box, x: number, y: number, boxList: Box[][]) => boolean) {
 			for (var y = 0; y < this.height; y++) {
@@ -40,13 +45,14 @@ namespace Logic {
 			}
 
 			let rate = 1;
-			let bo: SourceBox;
+			// 创建sourceBox
+			let bo: SourceBox = this.boxList[un.posi.y][un.posi.x]
+				= Box.create(boxType.source, { posi: un.posi}) as SourceBox;
+
+
+			this.log('create sourece:', bo.posi);
 			while (this.passRate(rate) && extList.length) {
-				// 创建sourceBox
-				if (!bo) {
-					bo = this.boxList[un.posi.y][un.posi.x]
-						= Box.create(boxType.source, { paintedCount: 0 }) as SourceBox;
-				}
+
 				bo.paintedCount++;
 
 				// paint
@@ -54,7 +60,9 @@ namespace Logic {
 				let ext = extList[index];
 				extList.splice(index, 1);
 				let pa = this.boxList[ext.y][ext.x]
-					= Box.create(boxType.painted, { sourceId: bo.id });
+					= Box.create(boxType.painted, { posi: ext, sourceId: bo.id }) as PaintedBox;
+
+				this.log('create painted', this.findSource(pa.sourceId).posi, pa.posi);
 
 				// rate降低概率
 				rate *= (3 / 4);
@@ -88,8 +96,9 @@ namespace Logic {
 
 
 					if (map2d.getDirection(pa.posi, so.posi) == map2d.getDirection(un.posi, so.posi)) {
-						this.boxList[un.posi.y][un.posi.x] = Box.create(boxType.painted, { sourceId: so.id });
+						this.boxList[un.posi.y][un.posi.x] = Box.create(boxType.painted, { posi: un.posi, sourceId: so.id });
 						so.paintedCount++;
+						this.log('link:',so.posi,pa.posi,un.posi);
 						return true;
 					}
 					return false;
@@ -97,22 +106,25 @@ namespace Logic {
 
 			// 2.切割
 			// 如果1方案不能成立
-			// 如果邻居是paintedBox,则切下pa,让un成为sourceBox,让pa指向un
 			// 如果邻居是sourceBox,则把un指向so
+			// 如果邻居是paintedBox,则切下pa,让un成为sourceBox,让pa指向un
 			if (!flag) {
 				near.some(posi => {
 					let ne: Box = this.boxList[posi.y][posi.x];
 					if (ne.type == boxType.source) {
 						let so = ne as SourceBox;
-						let pa = this.boxList[un.posi.y][un.posi.x] = Box.create(boxType.painted) as PaintedBox;
+						let pa = this.boxList[un.posi.y][un.posi.x] = Box.create(boxType.painted, { posi: un.posi }) as PaintedBox;
 						pa.sourceId = so.id;
 						so.paintedCount++;
+						this.log('union un:', so.posi, pa.posi);
 					} else if (ne.type == boxType.painted) {
-						let so = this.boxList[un.posi.y][un.posi.x] = Box.create(boxType.source) as SourceBox;
+						let so = this.boxList[un.posi.y][un.posi.x] = Box.create(boxType.source, { posi: un.posi }) as SourceBox;
 						let pa = this.boxList[posi.y][posi.x] as PaintedBox;
 						let lastSo = this.findSource(pa.sourceId);
 						lastSo.paintedCount--;
 						pa.sourceId = so.id;
+						this.log('cut pa:', so.posi, pa.posi);
+
 
 					}
 					return true;
@@ -131,8 +143,9 @@ namespace Logic {
 			this.visit(bo => {
 				if (bo.id == sourceId) {
 					so = bo as SourceBox;
-					return true;
+					return false;
 				}
+				return true;
 			});
 			return so;
 		}

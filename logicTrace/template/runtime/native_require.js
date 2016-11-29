@@ -19,6 +19,8 @@ var game_file_list = [
 	"bin-debug/logic/sourceBox.js",
 	"bin-debug/logic/types.js",
 	"bin-debug/logic/undefBox.js",
+	"bin-debug/server/app.js",
+	"bin-debug/server/config.js",
 	//----auto game_file_list end----
 ];
 

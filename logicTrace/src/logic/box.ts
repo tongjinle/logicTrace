@@ -17,7 +17,7 @@ namespace Logic {
 		static create(type: boxType, opts?: any): Box {
 			let bo: Box;
 			if (type == boxType.source) {
-				bo = new SourceBox(opts.paintedCount);
+				bo = new SourceBox();
 			} else if (type == boxType.blank) {
 				bo = new BlankBox();
 			} else if (type == boxType.painted) {

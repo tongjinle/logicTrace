@@ -3,9 +3,11 @@ namespace Logic {
 		// 颜色
 		color: number;
 		// 产生的paintedBox的个数
-		constructor(public paintedCount: number) {
+		paintedCount: number;
+		constructor() {
 			super();
 			this.type = boxType.source;
+			this.paintedCount = 0;
 		}
 	}
 }
