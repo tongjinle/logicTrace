@@ -38,11 +38,6 @@ class Main extends egret.DisplayObjectContainer {
     public constructor() {
         super();
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
-        let map = Server.app.createMap({
-            width: 2,
-            height: 3
-        });
-        console.log(JSON.stringify (map.boxList));
     }
 
     private onAddToStage(event:egret.Event) {
@@ -122,7 +117,9 @@ class Main extends egret.DisplayObjectContainer {
      * Create a game scene
      */
     private createGameScene():void{
-        
+        Client.app.req('createMap', { width: 2, height: 3 }, (data:Logic.Map) => {
+            console.log(JSON.stringify(data.boxList));
+        });
     }
     private createGameScene2():void {
         let sky:egret.Bitmap = this.createBitmapByName("bg_jpg");

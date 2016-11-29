@@ -11,6 +11,7 @@ var game_file_list = [
 	"libs/underscore/underscore.js",
 	"bin-debug/LoadingUI.js",
 	"bin-debug/Main.js",
+	"bin-debug/client/client.js",
 	"bin-debug/logic/map.js",
 	"bin-debug/logic/box.js",
 	"bin-debug/logic/blankBox.js",
