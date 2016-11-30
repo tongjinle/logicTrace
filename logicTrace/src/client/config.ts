@@ -1,6 +1,6 @@
 namespace Client{
 	export let config = {
-		boxSize: 40,
+		boxSize: 100,
 		emptyColor: 0xffffff
 	};
 }

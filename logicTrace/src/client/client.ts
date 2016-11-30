@@ -3,16 +3,23 @@ namespace Client {
 
 		holder: egret.DisplayObjectContainer;
 		hud: Hud;
+		map: Map;
 		canvas: any;
 
 
 		init(holder: egret.DisplayObjectContainer) {
-			// this.holder = holder;
+			this.holder = holder;
 
-			// this.hud = new Hud();
-			// this.hud.x = 0;
-			// this.hud.y = 0;
-			// this.holder.stage.addChild(this.hud);
+			let hud = this.hud = new Hud();
+			hud.x = 0;
+			hud.y = 0;
+			this.holder.stage.addChild(hud);
+
+			let map = this.map = new Map();
+			map.x = 0;
+			map.y = hud.height;
+			this.holder.stage.addChild(map);
+
 		}
 
 		req(name: string, opts: any, next: (data) => void) {
@@ -22,10 +29,11 @@ namespace Client {
 		}
 
 		acceptMsg(name: string) {
-			if (name == 'reset') {
+			if (name == 'start' || name == 'reset') {
 				let opts = { width: 2, height: 3 };
 				this.req('createMap', opts, (data: Logic.Map) => {
 					console.log(data.boxList);
+					this.map.loadData(data.boxList);
 				});
 			}
 		}

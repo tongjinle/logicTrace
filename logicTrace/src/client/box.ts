@@ -1,9 +1,11 @@
 
 namespace Client {
-	let boxSize = config.boxSize;
-	let emptyColor = config.emptyColor;
+	
 
 	export class Box extends egret.Sprite {
+		private emptyColor = config.emptyColor;
+		private boxSize = config.boxSize;
+
 		type: boxType;
 
 		// sourceBox下,isFull表示已经涂满
@@ -24,8 +26,8 @@ namespace Client {
 			this.color = opts.color;
 
 			let br = this.brick = new egret.Shape();
-			br.graphics.beginFill(emptyColor, .5);
-			br.graphics.drawRoundRect(0, 0, boxSize, boxSize, .2 * boxSize);
+			br.graphics.beginFill(this.emptyColor, .5);
+			br.graphics.drawRoundRect(0, 0, this.boxSize, this.boxSize, .2 * this.boxSize);
 			br.graphics.endFill();
 			this.addChild(br);
 
@@ -55,9 +57,9 @@ namespace Client {
 				return;
 			}
 			let br = this.brick;
-			let color = isPainted ? this.color : emptyColor;
+			let color = isPainted ? this.color : this.emptyColor;
 			br.graphics.beginFill(color);
-			br.graphics.drawRoundRect(0, 0, boxSize, boxSize, .2 * boxSize);
+			br.graphics.drawRoundRect(0, 0, this.boxSize, this.boxSize, .2 * this.boxSize);
 			br.graphics.endFill();
 			br.alpha = isPainted ? .5 : 1;
 		}
