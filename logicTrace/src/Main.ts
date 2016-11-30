@@ -117,9 +117,17 @@ class Main extends egret.DisplayObjectContainer {
      * Create a game scene
      */
     private createGameScene():void{
-        Client.app.req('createMap', { width: 2, height: 3 }, (data:Logic.Map) => {
-            console.log(JSON.stringify(data.boxList));
-        });
+       
+
+        let app = Client.app;
+        Client.app.init(this);
+
+        let sky: egret.Bitmap = this.createBitmapByName("bg_jpg");
+        this.addChild(sky);
+        let stageW: number = this.stage.stageWidth;
+        let stageH: number = this.stage.stageHeight;
+        sky.width = stageW;
+        sky.height = stageH;
     }
     private createGameScene2():void {
         let sky:egret.Bitmap = this.createBitmapByName("bg_jpg");
