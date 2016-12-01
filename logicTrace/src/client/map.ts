@@ -17,7 +17,7 @@ namespace Client {
 		}
 
 		loadData(boxList: Logic.Box[][]) {
-
+			this.removeChildren();
 			boxList.forEach((row, y) => {
 				row.forEach((bo, x) => {
 					this.addBox(bo);

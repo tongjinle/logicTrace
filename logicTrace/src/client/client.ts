@@ -30,7 +30,7 @@ namespace Client {
 
 		acceptMsg(name: string) {
 			if (name == 'start' || name == 'reset') {
-				let opts = { width: 2, height: 3 };
+				let opts = { width: 3, height: 5 };
 				this.req('createMap', opts, (data: Logic.Map) => {
 					console.log(data.boxList);
 					this.map.loadData(data.boxList);

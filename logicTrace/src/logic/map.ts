@@ -47,7 +47,7 @@ namespace Logic {
 			let rate = 1;
 			// 创建sourceBox
 			let bo: SourceBox = this.boxList[un.posi.y][un.posi.x]
-				= Box.create(boxType.source, { posi: un.posi}) as SourceBox;
+				= Box.create(boxType.source, { posi: un.posi }) as SourceBox;
 
 
 			this.log('create sourece:', bo.posi);
@@ -98,7 +98,7 @@ namespace Logic {
 					if (map2d.getDirection(pa.posi, so.posi) == map2d.getDirection(un.posi, so.posi)) {
 						this.boxList[un.posi.y][un.posi.x] = Box.create(boxType.painted, { posi: un.posi, sourceId: so.id });
 						so.paintedCount++;
-						this.log('link:',so.posi,pa.posi,un.posi);
+						this.log('link:', so.posi, pa.posi, un.posi);
 						return true;
 					}
 					return false;
@@ -118,11 +118,23 @@ namespace Logic {
 						so.paintedCount++;
 						this.log('union un:', so.posi, pa.posi);
 					} else if (ne.type == boxType.painted) {
-						let so = this.boxList[un.posi.y][un.posi.x] = Box.create(boxType.source, { posi: un.posi }) as SourceBox;
-						let pa = this.boxList[posi.y][posi.x] as PaintedBox;
+						let pa = ne as PaintedBox;
 						let lastSo = this.findSource(pa.sourceId);
-						lastSo.paintedCount--;
-						pa.sourceId = so.id;
+						let so = this.boxList[pa.posi.y][pa.posi.x] = Box.create(boxType.source, { posi: pa.posi }) as SourceBox;
+						let pa2 = this.boxList[un.posi.y][un.posi.x] = Box.create(boxType.painted, { posi: un.posi }) as PaintedBox;
+						pa2.sourceId = so.id;
+						so.paintedCount++;
+
+						if (lastSo.paintedCount == 1) {
+							// 判断so的paintedCount,如果==1,让so转成一个paintedBox,指向pa
+							let so2pa = this.boxList[lastSo.posi.y][lastSo.posi.x]
+								= Box.create(boxType.painted, { posi: lastSo.posi }) as PaintedBox;
+							so2pa.sourceId = so.id;
+							so.paintedCount++;
+						} else {
+							lastSo.paintedCount--;
+						}
+						// 
 						this.log('cut pa:', so.posi, pa.posi);
 
 
