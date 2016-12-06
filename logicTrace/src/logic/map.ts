@@ -15,8 +15,170 @@ namespace Logic {
 
 		}
 
+		process(action: string, sourceId: number, posiList: map2d.IPosition[]) {
+			let so = this.findSource(sourceId);
+
+			posiList
+				.map(posi => this.boxList[posi.y][posi.x])
+				.forEach((pa: PaintedBox) => {
+					if (action == 'add') {
+						pa.isPainted = true;
+						pa.dragSourceId = sourceId;
+
+						so.paintIdList.push(pa.id);
+					} else if (action == 'sub') {
+						pa.isPainted = false;
+						pa.dragSourceId = undefined;
+
+						so.paintIdList = so.paintIdList.filter(paId => paId != pa.id);
+					}
+				});
+		}
+
+		drag(from: map2d.IPosition, to: map2d.IPosition): { err: string, action?: string, sourceId?: number, posiList?: map2d.IPosition[] } {
+			// 不在一个方向
+			if (map2d.getDirection(from, to) === undefined) {
+				return { err: 'NOT in same line' };
+			}
+
+			// 两点重合
+			if (map2d.isPositionEqual(from, to)) {
+				return { err: 'from point EQUAL to point' };
+			}
+
+
+
+			let action: string;
+			let fpo = this.boxList[from.y][from.x];
+			if (fpo.type == boxType.source) {
+				action = 'add';
+				let so = fpo as SourceBox;
+				let between = map2d.getBetween(from, to);
+				let dist = Math.max(Math.min(so.paintedCount - so.paintIdList.length, between.length + 1), 0);
+				let posiList = map2d.lineRange(from, dist, map2d.getDirection(to, from));
+
+				if (this.checkCross(posiList)) {
+					return {
+						err: 'path CROSS'
+					};
+				}
+				posiList.forEach(posi => {
+					this.paint('add', posi, so.id);
+				});
+
+
+				return {
+					action,
+					posiList,
+					sourceId: so.id,
+					err: undefined
+				};
+			} else if (fpo.type == boxType.painted) {
+				let pa = fpo as PaintedBox;
+
+				//如果这个paintedBox没有被paint过,则无效
+				if (!pa.isPainted) {
+					return { err: 'paintBox is NOT painted' };
+				}
+
+				// sourceBox不能在from和to中间
+				let so = this.findSource(pa.dragSourceId);
+				// if (map2d.getDirection(from, so.posi) != map2d.getDirection(to, so.posi)) {
+				// 	return { err: 'soureceBox is BETWEEN from and to' };
+				// }
+				if (map2d.getBetween(from, to).some(posi => map2d.isPositionEqual(posi, so.posi))) {
+					return { err: 'soureceBox is BETWEEN from and to' };
+
+				}
+
+
+				let dragDire = map2d.getDirection(to, from);
+				let sourceDire = map2d.getDirection(from, so.posi);
+
+				// 方向必须在一条线上
+				if ((dragDire + sourceDire) % 2) {
+					return { err: 'NOT same direction' };
+				}
+				action = dragDire == sourceDire ? 'add' : 'sub';
+				let between: map2d.IPosition[] = map2d.getBetween(from, to);
+				let posiList: map2d.IPosition[];
+				if (action == 'add') {
+					let dist = Math.max(Math.min(so.paintedCount - so.paintIdList.length, between.length + 1), 0);
+					posiList = map2d.lineRange(from, dist, map2d.getDirection(to, from));
+					
+					if (this.checkCross(posiList)) {
+						return {
+							err: 'path CROSS'
+						};
+					}
+					posiList.forEach(posi => this.paint('add', posi, so.id));
+				} else if (action == 'sub') {
+					posiList = between.concat(from);
+					posiList.forEach(posi => this.paint('sub', posi, so.id));
+				}
+				return {
+					err: undefined,
+					action,
+					posiList,
+					sourceId: so.id
+				};
+
+			}
+
+		}
+		// 检查路径中有没有cross现象
+		private checkCross(posiList:map2d.IPosition[]):boolean{
+			let flag = !!_.find(posiList, posi => {
+				let bo = this.boxList[posi.y][posi.x];
+				if (bo.type != boxType.painted) {
+					return true;
+				}
+				let pa = bo as PaintedBox;
+				if (pa.isPainted) {
+					return true;
+				}
+
+			});
+			return flag;
+		}
+
+		// paint/unpaint box
+		private paint(action: string, posi: map2d.IPosition, sourceId: number) {
+			let so = this.findSource(sourceId);
+			let pa = this.boxList[posi.y][posi.x] as PaintedBox;
+			if (action == 'add') {
+
+				pa.isPainted = true;
+				pa.dragSourceId = so.id;
+
+				so.paintIdList = so.paintIdList.concat(pa.id);
+			} else if (action == 'sub') {
+				pa.isPainted = false;
+				pa.dragSourceId = undefined;
+
+				so.paintIdList = so.paintIdList.filter(paId => paId != pa.id);
+
+			}
+		}
+
+		isWin(): boolean {
+			let flag = true;
+			this.visit((bo, x, y, boxList) => {
+				if (bo.type == boxType.painted) {
+					let pa = bo as PaintedBox;
+					if (!pa.isPainted) {
+						flag = true;
+						return false;
+					}
+				}
+
+			});
+			return flag;
+		}
+
 		private log(...arg) {
-			console.log.apply(null, arg);
+			return;
+			// console.log.apply(null, arg);
 		}
 
 
@@ -25,7 +187,7 @@ namespace Logic {
 				this.boxList[y] = this.boxList[y] || [];
 				for (var x = 0; x < this.width; x++) {
 					let bo = this.boxList[y][x];
-					if (!fn(bo, x, y, this.boxList)) {
+					if (fn(bo, x, y, this.boxList) === false) {
 						return;
 					}
 

@@ -28,7 +28,7 @@ namespace Client{
 			// s.texture = RES.getRes('egret_icon_png');
 			s.touchEnabled = true;
 			s.addEventListener(egret.TouchEvent.TOUCH_TAP, (e) => {
-				app.acceptMsg('reset');
+				app.acceptMsg(Events.hudReset);
 			}, this);
 		}
 	}

@@ -227,6 +227,15 @@ namespace map2d {
 	}
 
 
+	// 判断两个坐标是否相等
+	export function isPositionEqual(pa:IPosition,pb:IPosition){
+		if(!pa||!pb){
+			return false;
+		}
+		return pa.x == pb.x && pa.y == pb.y;
+	}
+
+
 	// *************************************************************************
 	// 基础range函数 END
 	// *************************************************************************

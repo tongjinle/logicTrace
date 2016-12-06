@@ -1,70 +1,87 @@
 
 namespace Client {
-	
+
 
 	export class Box extends egret.Sprite {
-		private emptyColor = config.emptyColor;
-		private boxSize = config.boxSize;
+		protected emptyColor = config.emptyColor;
+		protected boxSize = config.boxSize;
 
+		id: number;
+
+		posi: map2d.IPosition;
 		type: boxType;
 
-		// sourceBox下,isFull表示已经涂满
-		isFull: boolean;
-		// sourceBox下,countText来显示sourceBox下面多少个paintedBox
-		countText: egret.TextField;
+
 
 		// paintedBox下,isPainted表示已经涂好
 		isPainted: boolean;
+		sourceId: number;
 
 		// color:
-		private color: number;
+		protected color: number;
 
-		private brick: egret.Shape;
+		protected brick: egret.Shape;
+		private brickSize = .8 * this.boxSize;
+		private radiusSize = .2 * this.boxSize;
 
-		constructor(type: boxType, opts: any) {
+		constructor(id: number, type: boxType, posi: map2d.IPosition) {
 			super();
-			this.color = opts.color;
+			this.id = id;
+			this.type = type;
+			this.width = this.boxSize;
+			this.height = this.boxSize;
+			this.posi = _.clone(posi);
+			this.createBrick();
+
+			this.bind();
+
+		}
+
+		private createBrick() {
 
 			let br = this.brick = new egret.Shape();
-			br.graphics.beginFill(this.emptyColor, .5);
-			br.graphics.drawRoundRect(0, 0, this.boxSize, this.boxSize, .2 * this.boxSize);
-			br.graphics.endFill();
+			br.anchorOffsetX = this.brickSize / 2;
+			br.anchorOffsetY = this.brickSize / 2;
+			br.x = this.width / 2;
+			br.y = this.height / 2;
+
+			this.renderBrickColor(this.emptyColor);
+
 			this.addChild(br);
-
-			if (type == boxType.source) {
-
-				let co = this.countText = new egret.TextField();
-				co.text = opts.paintedCount;
-				this.addChild(co);
-				this.isFull = false;
-
-			} else if (type == boxType.painted) {
-				this.isPainted = false;
-			}
 		}
 
-		// 当sourceBox的从属的paintedBox被涂满的时候,sourceBox要旋转一周
-		rotate() {
-			if (this.type == boxType.source) {
-				let co = this.countText;
-				egret.Tween.get(co).to({ rotation: 360 }, 500);
-			}
-		}
-
-		// paintedBox被涂到的时候...
-		paint(isPainted: boolean) {
-			if (isPainted == this.isPainted) {
-				return;
-			}
+		protected renderBrickColor(color:number){
 			let br = this.brick;
-			let color = isPainted ? this.color : this.emptyColor;
 			br.graphics.beginFill(color);
-			br.graphics.drawRoundRect(0, 0, this.boxSize, this.boxSize, .2 * this.boxSize);
+			br.graphics.drawRoundRect(0, 0, this.brickSize, this.brickSize, this.radiusSize);
 			br.graphics.endFill();
-			br.alpha = isPainted ? .5 : 1;
 		}
 
-		change() { }
+
+
+
+
+
+
+		bind() {
+			this.touchEnabled = true;
+			this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, e => {
+
+				console.log(this.posi);
+				app.acceptMsg(Events.boxTouchBegin, { posi: this.posi });
+			}, this);
+
+			this.addEventListener(egret.TouchEvent.TOUCH_END, e => {
+				console.log(this.posi);
+				app.acceptMsg(Events.boxTouchEnd, { posi: this.posi });
+			}, this);
+
+
+		}
+
+
+
+		
 	}
 
 

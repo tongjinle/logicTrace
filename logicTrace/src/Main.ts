@@ -120,7 +120,8 @@ class Main extends egret.DisplayObjectContainer {
        
 
         let app = Client.app;
-        Client.app.init(this);
+        app.init(this);
+        app.acceptMsg(Client.Events.hudReset);
 
         let sky: egret.Bitmap = this.createBitmapByName("bg_jpg");
         this.addChild(sky);
