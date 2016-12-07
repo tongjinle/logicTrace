@@ -81,6 +81,8 @@ namespace Client {
 
 				});
 
+
+
 			let so: SourceBox = this.findSourceBox(sourceId);
 
 			so.isFull = this.sumPaintedCount(sourceId) == so.paintedCount;
@@ -88,9 +90,43 @@ namespace Client {
 				so.rotate();
 			}
 
+			// line
+			let sorted = posiList
+				.sort((poa: map2d.IPosition, pob: map2d.IPosition) => (poa.x * 10000 + poa.y) - (pob.x * 10000 + pob.y))
+				;
+			sorted.forEach((posi, i, list) => {
+				if (i == list.length - 1) {
+					return;
+				}
+				let next = list[i + 1];
+				this.drawLine(posi, next, action == 'sub');
+			});
+
+
+
 		}
 
-		celebrate(){
+		private lineList: Line[] = [];
+		private drawLine(from: map2d.IPosition, to: map2d.IPosition, isClear: boolean = true) {
+			if (!isClear) {
+				let line = new Line(from, to);
+				line.x = (from.x + to.x) / 2 * this.boxSize;
+				line.y = (from.y + to.y) / 2 * this.boxSize;
+				this.addChild(line);
+				this.setChildIndex(line,0);
+				this.lineList.push(line);
+			} else {
+				this.lineList.forEach((line, i) => {
+					if (line.is(from, to)) {
+						this.removeChild(line);
+						this.lineList.splice(i, 1);
+					}
+				});
+			}
+
+		}
+
+		celebrate() {
 
 		}
 

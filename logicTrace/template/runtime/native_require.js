@@ -16,6 +16,7 @@ var game_file_list = [
 	"bin-debug/client/config.js",
 	"bin-debug/client/events.js",
 	"bin-debug/client/hud.js",
+	"bin-debug/client/line.js",
 	"bin-debug/client/map.js",
 	"bin-debug/client/paintedBox.js",
 	"bin-debug/client/pointBar.js",

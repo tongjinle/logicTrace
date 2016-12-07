@@ -38,7 +38,7 @@ namespace Client {
 			let dict: { [index: string]: (ev: string, data: any) => void } = {};
 
 			dict[Events.hudReset] = (ev, data) => {
-				let opts = { width: 2, height: 2 };
+				let opts = { width: 6, height: 8 };
 				Server.app.createMap( opts, (data: Logic.Map) => {
 					console.log(data.boxList);
 					this.map.loadData(data.boxList);
