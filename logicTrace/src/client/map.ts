@@ -39,6 +39,9 @@ namespace Client {
 					this.addBox(bo);
 				});
 			});
+
+			// reset map position
+			this.x = this.stage.stageWidth / 2 - boxList[0].length * this.boxSize / 2;
 		}
 
 
@@ -88,7 +91,7 @@ namespace Client {
 		}
 
 		celebrate(){
-			
+
 		}
 
 		private sumPaintedCount(sourceId: number): number {
