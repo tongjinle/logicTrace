@@ -42,6 +42,8 @@ namespace Client {
 				Server.app.createMap( opts, (data: Logic.Map) => {
 					console.log(data.boxList);
 					this.map.loadData(data.boxList);
+
+					this.pushMsg(Events.loadMap, data.boxList);
 				});
 			};
 
@@ -65,6 +67,12 @@ namespace Client {
 						console.log(dragInfo.sourceId);
 						console.log(dragInfo.posiList);
 						this.map.process(dragInfo.action, dragInfo.sourceId, dragInfo.posiList);
+
+						this.pushMsg(Events.drag, {
+							action:dragInfo.action,
+							count:dragInfo.posiList.length
+						});
+
 					}else{
 						console.log(dragInfo.err);
 					}

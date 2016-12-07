@@ -4,5 +4,9 @@ namespace Client{
 		static hudReset: string = 'hud.reset';
 		static boxTouchBegin: string = 'box.touchBegin';
 		static boxTouchEnd: string = 'box.touchEnd';
+
+
+		static loadMap: string = 'client.loadMap';
+		static drag: string = 'client.drag';
 	}
 }

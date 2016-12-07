@@ -1,6 +1,6 @@
 {
 	"groups": [{
-		"keys": "bg_jpg,reset,egret_icon_png,description_json",
+		"keys": "bg_jpg,reset",
 		"name": "preload"
 	}],
 	"resources": [{
@@ -10,14 +10,6 @@
 	}, {
 		"name": "reset",
 		"type": "image",
-		"url": "assets/egret_icon.png"
-	}, {
-		"name": "egret_icon_png",
-		"type": "image",
-		"url": "assets/egret_icon.png"
-	}, {
-		"name": "description_json",
-		"type": "json",
-		"url": "config/description.json"
+		"url": "assets/reset.png"
 	}]
 }
