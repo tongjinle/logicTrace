@@ -70,17 +70,24 @@ namespace Client {
 		process(action: string, sourceId: number, posiList: map2d.IPosition[]) {
 			let boxList = this.boxList;
 
-			posiList
-				.map(po => boxList[po.y][po.x])
-				.forEach((bo: PaintedBox) => {
-					if (action == 'add') {
+			
+
+			if (action == 'add') {
+				posiList
+					.map(po => boxList[po.y][po.x])
+					.forEach((bo: PaintedBox) => {
 						bo.paint(true, sourceId, this.colorMap[sourceId]);
-					} else if (action == 'sub') {
+					});
+
+				this.drawLineList( posiList, false);
+			} else if (action == 'sub') {
+				this.drawLineList( posiList, true);
+				posiList
+					.map(po => boxList[po.y][po.x])
+					.forEach((bo: PaintedBox) => {
 						bo.paint(false);
-					}
-
-				});
-
+					});
+			}
 
 
 			let so: SourceBox = this.findSourceBox(sourceId);
@@ -90,18 +97,7 @@ namespace Client {
 				so.rotate();
 			}
 
-			// line
-			let sorted = posiList
-				.sort((poa: map2d.IPosition, pob: map2d.IPosition) => (poa.x * 10000 + poa.y) - (pob.x * 10000 + pob.y))
-				;
-			sorted.forEach((posi, i, list) => {
-				if (i == list.length - 1) {
-					return;
-				}
-				let next = list[i + 1];
-				this.drawLine(posi, next, action == 'sub');
-			});
-
+			
 
 
 		}
@@ -110,10 +106,10 @@ namespace Client {
 		private drawLine(from: map2d.IPosition, to: map2d.IPosition, isClear: boolean = true) {
 			if (!isClear) {
 				let line = new Line(from, to);
-				line.x = (from.x + to.x) / 2 * this.boxSize;
-				line.y = (from.y + to.y) / 2 * this.boxSize;
+				line.x = (from.x + to.x+1) / 2 * this.boxSize;
+				line.y = (from.y + to.y+1) / 2 * this.boxSize;
 				this.addChild(line);
-				this.setChildIndex(line,0);
+				this.setChildIndex(line, 0);
 				this.lineList.push(line);
 			} else {
 				this.lineList.forEach((line, i) => {
@@ -124,6 +120,69 @@ namespace Client {
 				});
 			}
 
+		}
+
+		private drawLineList(posiList:map2d.IPosition[],isClear:boolean){
+			// line
+			if (posiList.length) {
+
+				let sortFn = (poa: map2d.IPosition, pob: map2d.IPosition) => (poa.x * 10000 + poa.y) - (pob.x * 10000 + pob.y);
+				let sorted = posiList
+					.map(posi => { return { x: posi.x, y: posi.y }; })
+					.sort(sortFn)
+					;
+				// linkPosi
+				let linkPosi: map2d.IPosition;
+				// header
+				let near: map2d.IPosition[];
+				let findLinkPosi = (spo: map2d.IPosition, posiList: map2d.IPosition[]) => {
+					let spa = this.boxList[spo.y][spo.x] as PaintedBox;
+
+					let lp: map2d.IPosition;
+					map2d.nearRange(spo, 1)
+						.filter(posi => posi.x >= 0 && posi.x < this.boxList[0].length && posi.y >= 0 && posi.y < this.boxList.length)
+						.some(posi => {
+							if (posiList.some(posi2 => map2d.isPositionEqual(posi, posi2))) {
+								return false;
+							};
+
+
+							let bo = this.boxList[posi.y][posi.x];
+							if (bo.type == boxType.painted) {
+								let pa = bo as PaintedBox;
+								if (pa.sourceId == spa.sourceId) {
+									lp = posi;
+									return true;
+								}
+							} else if (bo.type == boxType.source) {
+								let so = bo as SourceBox;
+								if (so.id == spa.sourceId) {
+									lp = posi;
+									return true;
+								}
+							}
+						})
+						;
+					return lp;
+				};
+
+				linkPosi = findLinkPosi(sorted[0], sorted)
+					|| findLinkPosi(sorted[sorted.length - 1], sorted);
+
+				sorted.push(linkPosi);
+				sorted = sorted.sort(sortFn);
+
+				sorted.forEach(posi => console.log(posi.x, posi.y));
+
+				sorted.forEach((posi, i, list) => {
+					if (i == list.length - 1/* && action == 'add'*/) {
+						return;
+					}
+					let next = list[i + 1];
+					this.drawLine(posi, next, isClear);
+				});
+
+			}
 		}
 
 		celebrate() {

@@ -55,6 +55,7 @@ namespace Client {
 			br.graphics.beginFill(color);
 			br.graphics.drawRoundRect(0, 0, this.brickSize, this.brickSize, this.radiusSize);
 			br.graphics.endFill();
+			// br.alpha = .8;
 		}
 
 
