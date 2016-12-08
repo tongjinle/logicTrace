@@ -21,7 +21,7 @@ namespace Client {
 		protected color: number;
 
 		protected brick: egret.Shape;
-		private brickSize = .8 * this.boxSize;
+		private brickSize = .72 * this.boxSize;
 		private radiusSize = .2 * this.boxSize;
 
 		constructor(id: number, type: boxType, posi: map2d.IPosition) {
