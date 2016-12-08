@@ -93,9 +93,7 @@ namespace Client {
 			let so: SourceBox = this.findSourceBox(sourceId);
 
 			so.isFull = this.sumPaintedCount(sourceId) == so.paintedCount;
-			if (so.isFull) {
-				so.rotate();
-			}
+			so.tryRotate();
 
 			
 

@@ -9,7 +9,7 @@ namespace Client {
 		paintedCount: number;
 
 
-		constructor(id: number,  posi: map2d.IPosition, color: number, paintedCount: number) {
+		constructor(id: number, posi: map2d.IPosition, color: number, paintedCount: number) {
 			super(id, boxType.source, posi);
 			this.color = color;
 			this.paintedCount = paintedCount;
@@ -17,11 +17,11 @@ namespace Client {
 
 			this.createCountText();
 			this.renderBrickColor(this.color);
-			
+
 
 		}
 
-		private createCountText(){
+		private createCountText() {
 			let co = this.countText = new egret.TextField();
 			co.text = this.paintedCount.toString();
 			co.size = this.boxSize / 2;
@@ -33,9 +33,21 @@ namespace Client {
 		}
 
 		// 当sourceBox的从属的paintedBox被涂满的时候,sourceBox要旋转一周
-		rotate() {
-			let co = this.countText;
-			egret.Tween.get(co).to({ rotation: 360 }, 500);
+		tryRotate() {
+
+			let ro = this.isFull ? 45 : 0;
+			let roFn: () => void = () => { };
+			if (this.brick.rotation != ro) {
+				roFn = () => egret.Tween.get(this.brick).to({ rotation: ro }, 500);
+			}
+			if (this.isFull) {
+				let co = this.countText;
+				egret.Tween.get(co).to({ rotation: 360 }, 500)
+					.call(roFn);
+			} else {
+				roFn();
+			}
+
 		}
 	}
 }
