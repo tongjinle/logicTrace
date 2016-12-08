@@ -1,6 +1,6 @@
 {
 	"groups": [{
-		"keys": "bg_jpg,reset",
+		"keys": "bg_jpg,reset_png,kaca_mp3",
 		"name": "preload"
 	}],
 	"resources": [{
@@ -8,8 +8,12 @@
 		"type": "image",
 		"url": "assets/bg.jpg"
 	}, {
-		"name": "reset",
+		"name": "reset_png",
 		"type": "image",
 		"url": "assets/reset.png"
+	}, {
+		"name": "kaca_mp3",
+		"type": "sound",
+		"url": "assets/kaca.mp3"
 	}]
 }

@@ -29,7 +29,7 @@ namespace Client {
 			s.height = 40;
 			s.x = this.width - s.width - 40;
 			s.y = this.height / 2 - s.height / 2;
-			s.texture = RES.getRes('reset');
+			s.texture = RES.getRes('reset_png');
 			// s.texture = RES.getRes('egret_icon_png');
 			s.touchEnabled = true;
 			s.addEventListener(egret.TouchEvent.TOUCH_TAP, (e) => {

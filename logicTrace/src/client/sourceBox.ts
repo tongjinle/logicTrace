@@ -43,11 +43,16 @@ namespace Client {
 			if (this.isFull) {
 				let co = this.countText;
 				egret.Tween.get(co).to({ rotation: 360 }, 500)
-					.call(roFn);
+					.call(roFn).call(this.kaca, this);
 			} else {
 				roFn();
 			}
 
+		}
+
+		private kaca() {
+			let sou: egret.Sound = RES.getRes('kaca_mp3');
+			sou.play(0, 1);
 		}
 	}
 }
