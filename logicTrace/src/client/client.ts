@@ -4,7 +4,7 @@ namespace Client {
 		holder: egret.DisplayObjectContainer;
 		hud: Hud;
 		map: Map;
-		canvas: any;
+		catList: Cat[];
 
 
 		init(holder: egret.DisplayObjectContainer) {
@@ -18,14 +18,17 @@ namespace Client {
 			let map = this.map = new Map();
 			map.x = 0;
 			map.y = hud.height;
+			map.width = this.holder.stage.stageWidth;
+			map.height = this.holder.stage.stageHeight - this.hud.height;
 			this.holder.stage.addChild(map);
+			console.log(this.holder.stage.getChildIndex(map), 'map');
 
-
+			
 
 		}
 
 
-		
+
 
 		// 第一个元素保存touchBegin的posi
 		// 第二个元素保存touchEnd的posi
@@ -38,8 +41,9 @@ namespace Client {
 			let dict: { [index: string]: (ev: string, data: any) => void } = {};
 
 			dict[Events.hudReset] = (ev, data) => {
-				let opts = { width: 6, height: 8 };
-				Server.app.createMap( opts, (data: Logic.Map) => {
+				let opts = { width: 2, height: 2 };
+				// let opts = { width: 6, height: 8 };
+				Server.app.createMap(opts, (data: Logic.Map) => {
 					console.log(data.boxList);
 					this.map.loadData(data.boxList);
 
@@ -60,25 +64,25 @@ namespace Client {
 				let from = this.touchStack[0];
 				let to = this.touchStack[1];
 				type DragInfo = { err: any, action?: string, sourceId?: number, posiList?: map2d.IPosition[] };
-				Server.app.drag({ from, to }, (data: {isWin:boolean,dragInfo:DragInfo}) => {
+				Server.app.drag({ from, to }, (data: { isWin: boolean, dragInfo: DragInfo }) => {
 					let dragInfo = data.dragInfo;
-					if(!dragInfo.err){
+					if (!dragInfo.err) {
 						console.log(dragInfo.action);
 						console.log(dragInfo.sourceId);
 						console.log(dragInfo.posiList);
 						this.map.process(dragInfo.action, dragInfo.sourceId, dragInfo.posiList);
 
 						this.pushMsg(Events.drag, {
-							action:dragInfo.action,
-							count:dragInfo.posiList.length
+							action: dragInfo.action,
+							count: dragInfo.posiList.length
 						});
 
-					}else{
+					} else {
 						console.log(dragInfo.err);
 					}
 
-					if(data.isWin){
-						this.map.celebrate();
+					if (data.isWin) {
+						this.pushMsg(Events.win);
 					}
 				});
 
@@ -93,16 +97,16 @@ namespace Client {
 
 
 		// 通知UI事件信息
-		pushMsg(name:string,data?:any){
+		pushMsg(name: string, data?: any) {
 			let dict = this.uiMsgDict;
-			let list:uiMsgCallback[] = dict[name] = dict[name] || [];
+			let list: uiMsgCallback[] = dict[name] = dict[name] || [];
 
 			list.forEach(fn => fn(data));
 		}
 
 		// UI绑定监听Msg
-		private uiMsgDict={};
-		onMsg(name:string,fn:uiMsgCallback){
+		private uiMsgDict = {};
+		onMsg(name: string, fn: uiMsgCallback) {
 			let dict = this.uiMsgDict;
 			let list = dict[name] = dict[name] || [];
 

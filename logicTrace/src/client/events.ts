@@ -8,5 +8,6 @@ namespace Client{
 
 		static loadMap: string = 'client.loadMap';
 		static drag: string = 'client.drag';
+		static win: string = 'client.win';
 	}
 }

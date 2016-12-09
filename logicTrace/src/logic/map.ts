@@ -167,7 +167,7 @@ namespace Logic {
 				if (bo.type == boxType.painted) {
 					let pa = bo as PaintedBox;
 					if (!pa.isPainted) {
-						flag = true;
+						flag = false;
 						return false;
 					}
 				}

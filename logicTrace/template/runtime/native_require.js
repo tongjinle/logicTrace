@@ -12,6 +12,7 @@ var game_file_list = [
 	"bin-debug/LoadingUI.js",
 	"bin-debug/Main.js",
 	"bin-debug/client/box.js",
+	"bin-debug/client/cat.js",
 	"bin-debug/client/client.js",
 	"bin-debug/client/config.js",
 	"bin-debug/client/events.js",

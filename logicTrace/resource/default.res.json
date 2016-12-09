@@ -1,6 +1,6 @@
 {
 	"groups": [{
-		"keys": "bg_jpg,reset_png,kaca_mp3",
+		"keys": "bg_jpg,reset_png,cat_png,kaca_mp3,miao_mp3",
 		"name": "preload"
 	}],
 	"resources": [{
@@ -12,8 +12,16 @@
 		"type": "image",
 		"url": "assets/reset.png"
 	}, {
+		"name": "cat_png",
+		"type": "image",
+		"url": "assets/cat.png"
+	}, {
 		"name": "kaca_mp3",
 		"type": "sound",
 		"url": "assets/kaca.mp3"
+	}, {
+		"name": "miao_mp3",
+		"type": "sound",
+		"url": "assets/miao.mp3"
 	}]
 }

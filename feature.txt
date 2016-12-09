@@ -1,6 +1,5 @@
 1 更换背景
 3 增加胜利之后的显示(),增加yaoyao的win的语音
-4 增加一只小猫,小猫会随机走动,点击到会发出声音(yaoyao的miao的声音)
 
 
 fixed:
@@ -9,3 +8,4 @@ fixed:
 6 一开始box要用落下的风格来登场
 5 restart按钮换图
 7 drag之后,pointbar有长度,在reset之后,还是有长度(pointbar也需要彻底清空)
+4 增加一只小猫,小猫会随机走动,点击到会发出声音(yaoyao的miao的声音)

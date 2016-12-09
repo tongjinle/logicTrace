@@ -12,9 +12,32 @@ namespace Client {
 
 		addToStage() {
 			this.width = this.stage.stageWidth;
+		}
 
-			this.height = 400;
-
+		private catList: Cat[] = [];
+		private addCatList(){
+			let catCount = config.catCount;
+			let len = this.catList.length;
+			while (catCount--) {
+				// this.catList.push()
+				let ca: Cat;
+				if(len){
+					ca = this.catList[catCount];
+					console.log('use cache cat');	
+				}
+				else{
+					ca =  new Cat();
+					this.catList.push(ca);
+					console.log('use new cat');
+				} 
+				ca.bound = {
+					x: this.x + ca.width / 2,
+					y: this.y + ca.height / 2,
+					width: this.width - ca.width,
+					height: this.height - ca.height
+				};
+				this.addChild(ca);
+			}
 		}
 
 
@@ -28,6 +51,8 @@ namespace Client {
 				.forEach((bo: Logic.Box) => {
 					this.colorMap[bo.id] = Math.floor(0xffffff * Math.random());
 				});
+
+			// this.height = boxList.length * this.boxSize;
 		}
 
 		loadData(boxList: Logic.Box[][]) {
@@ -40,8 +65,15 @@ namespace Client {
 				});
 			});
 
+			// resize
+			this.width = boxList[0].length * this.boxSize;
+			this.height = boxList.length * this.boxSize;
+
 			// reset map position
 			this.x = this.stage.stageWidth / 2 - boxList[0].length * this.boxSize / 2;
+
+			// 加猫猫
+			this.addCatList();
 		}
 
 
@@ -58,8 +90,6 @@ namespace Client {
 			}
 
 			// 设定在屏幕上的坐标
-			// bo.x = bo.posi.x * this.boxSize;
-			// bo.y = bo.posi.y * this.boxSize;
 			this.addChild(bo);
 			this.fallBox(bo);
 
