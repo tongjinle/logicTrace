@@ -20,6 +20,8 @@ namespace Client {
 			this.height = this.barHeight;
 
 			this.createBar();
+			
+			this.bind();
 		}
 
 		setProgress(currCount) {
@@ -66,6 +68,10 @@ namespace Client {
 			// 	[100, 255]
 			// );
 
+		}
+
+		bind(){
+			app.onMsg(Events.loadMap, () => this.renderBar(0));
 		}
 
 	}
