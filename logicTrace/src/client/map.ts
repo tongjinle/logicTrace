@@ -58,19 +58,27 @@ namespace Client {
 			}
 
 			// 设定在屏幕上的坐标
-			bo.x = bo.posi.x * this.boxSize;
-			bo.y = bo.posi.y * this.boxSize;
+			// bo.x = bo.posi.x * this.boxSize;
+			// bo.y = bo.posi.y * this.boxSize;
 			this.addChild(bo);
+			this.fallBox(bo);
 
 			let boxList = this.boxList;
 			let row = boxList[bo.posi.y] = boxList[bo.posi.y] || [];
 			row[bo.posi.x] = bo;
 		}
 
+		private fallBox(bo: Box) {
+			let taPosi: map2d.IPosition = { x: bo.posi.x * this.boxSize, y: bo.posi.y * this.boxSize};
+			bo.x = taPosi.x;
+			let dura = 200 + Math.random() * 300;
+			egret.Tween.get(bo).to({ y: taPosi.y }, dura, egret.Ease.bounceOut);
+		}
+
 		process(action: string, sourceId: number, posiList: map2d.IPosition[]) {
 			let boxList = this.boxList;
 
-			
+
 
 			if (action == 'add') {
 				posiList
@@ -79,9 +87,9 @@ namespace Client {
 						bo.paint(true, sourceId, this.colorMap[sourceId]);
 					});
 
-				this.drawLineList( posiList, false);
+				this.drawLineList(posiList, false);
 			} else if (action == 'sub') {
-				this.drawLineList( posiList, true);
+				this.drawLineList(posiList, true);
 				posiList
 					.map(po => boxList[po.y][po.x])
 					.forEach((bo: PaintedBox) => {
@@ -95,7 +103,7 @@ namespace Client {
 			so.isFull = this.sumPaintedCount(sourceId) == so.paintedCount;
 			so.tryRotate();
 
-			
+
 
 
 		}
@@ -104,8 +112,8 @@ namespace Client {
 		private drawLine(from: map2d.IPosition, to: map2d.IPosition, isClear: boolean = true) {
 			if (!isClear) {
 				let line = new Line(from, to);
-				line.x = (from.x + to.x+1) / 2 * this.boxSize;
-				line.y = (from.y + to.y+1) / 2 * this.boxSize;
+				line.x = (from.x + to.x + 1) / 2 * this.boxSize;
+				line.y = (from.y + to.y + 1) / 2 * this.boxSize;
 				this.addChild(line);
 				this.setChildIndex(line, 0);
 				this.lineList.push(line);
@@ -120,7 +128,7 @@ namespace Client {
 
 		}
 
-		private drawLineList(posiList:map2d.IPosition[],isClear:boolean){
+		private drawLineList(posiList: map2d.IPosition[], isClear: boolean) {
 			// line
 			if (posiList.length) {
 
