@@ -25,8 +25,8 @@ namespace Client {
 		createReset() {
 			let s = this.reset = new egret.Bitmap();
 			this.addChild(s);
-			s.width = 40;
-			s.height = 40;
+			s.width = 56;
+			s.height = 56;
 			s.x = this.width - s.width - 40;
 			s.y = this.height / 2 - s.height / 2;
 			s.texture = RES.getRes('reset_png');

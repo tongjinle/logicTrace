@@ -69,9 +69,9 @@ namespace Client {
 		}
 
 		private fallBox(bo: Box) {
-			let taPosi: map2d.IPosition = { x: bo.posi.x * this.boxSize, y: bo.posi.y * this.boxSize};
+			let taPosi: map2d.IPosition = { x: bo.posi.x * this.boxSize, y: bo.posi.y * this.boxSize };
 			bo.x = taPosi.x;
-			let dura = 200 + Math.random() * 300;
+			let dura = 200 + Math.random() * 100 * bo.posi.y;
 			egret.Tween.get(bo).to({ y: taPosi.y }, dura, egret.Ease.bounceOut);
 		}
 
