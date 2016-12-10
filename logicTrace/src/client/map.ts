@@ -8,6 +8,8 @@ namespace Client {
 			super();
 			this.once(egret.Event.ADDED_TO_STAGE, this.addToStage, this);
 			this.boxList = [];
+
+			this.bind();
 		}
 
 		addToStage() {
@@ -235,6 +237,13 @@ namespace Client {
 			return _.find(_.flatten(this.boxList), (bo: Box) => bo.type == boxType.source && bo.id == sourceId) as SourceBox;
 		}
 
+		bind(){
+			app.onMsg(Events.win, () => {
+				let sou :egret.Sound = RES.getRes('win_mp3');
+				sou.play(0, 1);
+
+			 });
+		}
 
 
 
