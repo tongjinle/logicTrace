@@ -88,6 +88,7 @@ namespace Client {
 
 	export enum boxType {
 		source,
-		painted
+		painted,
+		undef
 	}
 }

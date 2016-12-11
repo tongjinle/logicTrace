@@ -2,6 +2,8 @@ namespace Logic {
 
 	export class Map {
 		boxList: Box[][];
+		insertMax = 100;
+		mergeMax = 10000;
 		constructor(public width: number, public height: number) {
 			let boxList = this.boxList = [];
 			this.visit((bo, x, y, list) => {
@@ -9,9 +11,30 @@ namespace Logic {
 				return true;
 			});
 
-			while (this.insert());
+			let count = 100;
+			// 判断所有undefBox周围没有可以延伸的
+			while (1) {
+				let allUn = this.findAllUndef();
+				let tryAgain: boolean = false;
+				allUn.some(un => {
+					let extendList: map2d.IPosition[] = this.findExtendList(un.posi);
+					if (extendList.length) {
+						tryAgain = true;
+						return true;
+					}
+				});
+				if (!tryAgain) {
+					break;
+				}
 
+				this.insertMax = 100;
+				while (this.insert());
+			}
+			console.log("count:", count);
 			while (this.merge());
+
+
+
 
 		}
 
@@ -105,7 +128,7 @@ namespace Logic {
 				if (action == 'add') {
 					let dist = Math.max(Math.min(so.paintedCount - so.paintIdList.length, between.length + 1), 0);
 					posiList = map2d.lineRange(from, dist, map2d.getDirection(to, from));
-					
+
 					if (this.checkCross(posiList)) {
 						return {
 							err: 'path CROSS'
@@ -127,7 +150,7 @@ namespace Logic {
 
 		}
 		// 检查路径中有没有cross现象
-		private checkCross(posiList:map2d.IPosition[]):boolean{
+		private checkCross(posiList: map2d.IPosition[]): boolean {
 			let flag = !!_.find(posiList, posi => {
 				let bo = this.boxList[posi.y][posi.x];
 				if (bo.type != boxType.painted) {
@@ -228,6 +251,11 @@ namespace Logic {
 
 				// rate降低概率
 				rate *= (3 / 4);
+
+				this.insertMax--;
+				if (!this.insertMax) {
+					return false;
+				}
 			}
 
 			return true;
@@ -305,6 +333,11 @@ namespace Logic {
 				});
 			}
 
+			this.mergeMax--;
+			if (!this.mergeMax) {
+				return false;
+			}
+
 
 			// 合并"1"和"1"
 
@@ -324,8 +357,7 @@ namespace Logic {
 			return so;
 		}
 
-		// 寻找undef的格子
-		private findUndef(): UndefBox {
+		private findAllUndef(): UndefBox[] {
 			let un = undefined;
 			let boList: Box[] = [];
 			this.visit((bo, x, y, list) => {
@@ -334,10 +366,20 @@ namespace Logic {
 				}
 				return true;
 			});
+			return boList;
+
+		}
+
+		// 寻找undef的格子
+		private findUndef(): UndefBox {
+			let un: UndefBox = undefined;
+
+			let boList = this.findAllUndef();
 			if (boList.length) {
 				un = boList[Math.floor(Math.random() * boList.length)];
 			}
 			return un;
+
 		}
 
 		// 格子周围是不是有可以延伸的格子(用以paint)

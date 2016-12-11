@@ -23,7 +23,7 @@ namespace Client {
 			this.holder.stage.addChild(map);
 			console.log(this.holder.stage.getChildIndex(map), 'map');
 
-			
+
 
 		}
 
@@ -34,6 +34,20 @@ namespace Client {
 		// 第二个元素保存touchEnd的posi
 		private touchStack: map2d.IPosition[] = [];
 
+		test() {
+			let count = 1;
+			let map: Logic.Map;
+			while (count--) {
+				map = new Logic.Map(6, 8);
+				if (!map.insertMax || !map.mergeMax) {
+					console.log('use all');
+					console.log(map.insertMax, map.mergeMax);
+					return map;
+				}
+				// console.log('test map create', count, map.insertMax, map.mergeMax);
+			}
+			return map;
+		};
 
 
 		// 接受来自UI的事件信息
@@ -41,14 +55,22 @@ namespace Client {
 			let dict: { [index: string]: (ev: string, data: any) => void } = {};
 
 			dict[Events.hudReset] = (ev, data) => {
-				let opts = { width: 2, height: 2 };
-				// let opts = { width: 6, height: 8 };
+				// let opts = { width: 2, height: 2 };
+				let opts = { width: 6, height: 8 };
 				Server.app.createMap(opts, (data: Logic.Map) => {
+					// let data: Logic.Map;
+					// let count = 100;
+					// // while (!data && count--){
+					// 	data = this.test();
+					// // };
 					console.log(data.boxList);
 					this.map.loadData(data.boxList);
 
 					this.pushMsg(Events.loadMap, data.boxList);
 				});
+
+				// this.test();
+
 			};
 
 

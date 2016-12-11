@@ -86,9 +86,12 @@ namespace Client {
 			if (lBox.type == Logic.boxType.source) {
 				let lSo = lBox as Logic.SourceBox;
 				bo = new SourceBox(lSo.id, lSo.posi, this.colorMap[lSo.id], lSo.paintedCount);
-			} else {
+			} else if(lBox.type == Logic.boxType.painted) {
 				let lPa = lBox as Logic.PaintedBox;
 				bo = new PaintedBox(lPa.id, lPa.posi);
+			} else{
+				let lUn = lBox as Logic.UndefBox;
+				bo = new UndefBox(lUn.id, lUn.posi);
 			}
 
 			// 设定在屏幕上的坐标
