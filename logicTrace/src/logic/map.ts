@@ -3,7 +3,7 @@ namespace Logic {
 	export class Map {
 		boxList: Box[][];
 		insertMax = 100;
-		mergeMax = 10000;
+		mergeMax = 100;
 		constructor(public width: number, public height: number) {
 			let boxList = this.boxList = [];
 			this.visit((bo, x, y, list) => {
