@@ -1,0 +1,31 @@
+{
+	"groups": [{
+		"keys": "bg_jpg,reset_png,cat_png,kaca_mp3,miao_mp3,win_mp3",
+		"name": "preload"
+	}],
+	"resources": [{
+		"name": "bg_jpg",
+		"type": "image",
+		"url": "assets/bg.jpg"
+	}, {
+		"name": "reset_png",
+		"type": "image",
+		"url": "assets/reset.png"
+	}, {
+		"name": "cat_png",
+		"type": "image",
+		"url": "assets/cat.png"
+	}, {
+		"name": "kaca_mp3",
+		"type": "sound",
+		"url": "assets/kaca.mp3"
+	}, {
+		"name": "miao_mp3",
+		"type": "sound",
+		"url": "assets/miao.mp3"
+	}, {
+		"name": "win_mp3",
+		"type": "sound",
+		"url": "assets/win.mp3"
+	}]
+}
