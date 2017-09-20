@@ -357,187 +357,73 @@ namespace Logic {
 
         }
 
+
         // 清理地图上的1
         // 太多的1,会让地图变得没有趣味
         private clearOneBox(): void {
-            let arr: { [boxId: string]: { nearIdList: number[] } } = {};
+            let arr = [];
 
-            // 找到所有paintCount==1的box
-            let oneBoxList: SourceBox[] = [];
-            this.visit((bo, x, y, boxList) => {
-                if (bo.type == boxType.source) {
-                    let soBox = bo as SourceBox;
-                    if (soBox.paintedCount == 1) {
-                        oneBoxList.push(soBox);
-                    }
-                }
-                return true;
-            });
-
-            // 计算box周围的oneBox的个数
-            oneBoxList.forEach(bo => {
-                oneBoxList.forEach(bo2 => {
-                    if (bo == bo2) { return; }
-                    if (Math.abs(bo.posi.x - bo2.posi.x) + Math.abs(bo.posi.y - bo2.posi.y) != 1) { return; }
-
-                    let item = arr[bo.id] = arr[bo.id] || { nearIdList: [] };
-                    item.nearIdList.push(bo2.id);
-
-                });
-            });
-
-
-            _.each(arr, (item, key) => {
-                let soBox = this.findBoxById(parseInt(key)) as SourceBox;
-                let paBox = this.findPaintBoxList(parseInt(key))[0];
-
-                if(!paBox){return;}
-
-                let merge = (soBox: SourceBox, paBox: PaintedBox, soBox2: SourceBox, paBox2: PaintedBox): boolean => {
-                    // 找到关键节点
-                    // 作为sourceBox,可以跟其他box的x或者y相同
-                    let allBoxList = [soBox, soBox2, paBox, paBox2];
-                    let soBoxList = [soBox, soBox2];
-
-                    let keBox: SourceBox;
-                    soBoxList.some((bo: SourceBox) => {
-                        let flag = allBoxList.every((bo2: Box) => {
-                            if (bo == bo2) { return true; }
-                            return bo.posi.x == bo2.posi.x || bo.posi.y == bo2.posi.y;
-                        });
-
-                        if (flag) {
-                            keBox = bo;
-                            return true;
-                        }
-                        return false;
-                    });
-
-                    // 存在关键节点,就可以合并
-                    if (keBox) {
-                        let otherSoBox: SourceBox = keBox == soBox ? soBox2 : soBox;
-
-                        {
-                            let bo = otherSoBox;
-                            let paBox = this.boxList[bo.posi.y][bo.posi.x] = Box.create(boxType.painted, { posi: bo.posi }) as PaintedBox;
-                            paBox.sourceId = keBox.id;
-                        }
-
-                        {
-                            paBox.sourceId = keBox.id;
-                            paBox2.sourceId = keBox.id;
-                        }
-
-                        keBox.paintedCount += 3;
-                        return true;
-                    }
-
-                    return false;
-                };
-
-                item.nearIdList.some(id => {
-                    let soBox2 = this.findBoxById(id) as SourceBox;
-                    let paBox2: PaintedBox = this.findPaintBoxList(id)[0];
-                    
-                    if(!paBox2){
-                        return false;
-                    }
-
-                    return merge(soBox, paBox, soBox2, paBox2);
-                });
-
-            });
-
-            return;
-
-
-            // nearCount最大的开始merge掉周围的oneBox
-            let intervalMax = 1;
-            let max = intervalMax;
-            let maxId: string;
-            while (1) {
-                _.each(arr, (item, key) => {
-                    let len = item.nearIdList.length;
-                    if (max < len) {
-                        max = len
-                        maxId = key;
-                    }
-                });
-
-                if (max == intervalMax) {
-                    break;
-                }
-
-                // 合并掉隔壁的oneBox
-                let count: number = 0;
-                if (maxId !== undefined) {
-                    arr[maxId].nearIdList.forEach(neId => {
-                        // 消去sourceBox,使之成为blankBox
-                        let bo = this.findSource(neId);
-                        if (bo) {
-                            console.log('be merged one box:');
-                            console.log(bo.posi);
-                            count++;
-                            this.boxList[bo.posi.y][bo.posi.x] = Box.create(boxType.painted, { posi: bo.posi });
-
-                            // 删除在arr中记录
-                            delete arr[neId];
-                        }
-                    });
-
-                    // maxId所指向的sourceBox自然paintCount要加上max
-                    // 然后再删除它在arr中的记录
-                    let bo = this.findSource(parseInt(maxId));
-                    // 不是直接+=max,而是count,是因为可能邻近的oneBox已经被别的吸收了
-                    bo.paintedCount += count;
-                    delete arr[maxId];
-
-                    console.log('main box:');
-                    console.log(bo.posi);
-                }
-                max = intervalMax;
-
-            }
-
-            return;
-
-            // 没有和oneBox相邻的oneBox,尝试被整合到隔壁的sourceBox上
-            oneBoxList = [];
-            this.visit((bo, x, y, boxList) => {
-                if (bo.type == boxType.source) {
-                    let soBox = bo as SourceBox;
-                    if (soBox.paintedCount == 1) {
-                        oneBoxList.push(soBox);
-                    }
+            let open: SourceBox[] = [];
+            let close: SourceBox[] = [];
+            this.visit(bo => {
+                if (bo.type == boxType.source && (bo as SourceBox).paintedCount == 1) {
+                    open.push(bo as SourceBox);
                 }
                 return true;
             });
 
 
-            _.each(oneBoxList, bo => {
+            open.forEach(bo => {
+                let onBox = bo;
 
+                if(close.some(bo=>bo==onBox)){
+                    return ;
+                }
 
-
-                let nearPosiList = map2d.nearRange(bo.posi, 1)
+                // 找到周围的sourcebox
+                let list = map2d.nearRange(onBox.posi, 1)
                     .filter(posi => !this.isOut(posi))
                     .filter(posi => {
-                        return this.boxList[posi.y][posi.x].type == boxType.source;
+                        let bo = this.boxList[posi.y][posi.x];
+                        return bo.type == boxType.source;
                     });
 
-
-
-                console.log(nearPosiList);
-
-                nearPosiList.some(posi => {
-                    let bo: SourceBox = this.boxList[posi.y][posi.x] as SourceBox;
-                    bo.paintedCount++;
-                    this.boxList[bo.posi.y][bo.posi.x] = Box.create(boxType.painted, { posi });
-                    return true;
+                 list.some(posi => {
+                    let keyBox = this.boxList[posi.y][posi.x] as SourceBox;
+                    let ret =  this.mergeKeyBox(keyBox, onBox);
+                    if (ret){
+                        close.push(onBox);
+                        if(keyBox.paintedCount==1){
+                            close.push(keyBox);
+                        }
+                    }
+                    return ret;
                 });
 
             });
 
 
+
+
+        }
+
+        // 尝试合并2个sourceBox
+        private mergeKeyBox(keyBox: SourceBox, otherBox: SourceBox): boolean {
+            if (otherBox.paintedCount != 1) { return; }
+            let paBox = this.findPaintBoxList(otherBox.id)[0];
+
+            if ((keyBox.posi.x == otherBox.posi.x && keyBox.posi.x == paBox.posi.x) ||
+                (keyBox.posi.y == otherBox.posi.y && keyBox.posi.y == paBox.posi.y)) {
+
+                paBox.sourceId = keyBox.id;
+                {
+                    let bo = otherBox;
+                    this.boxList[bo.posi.y][bo.posi.x] = Box.create(boxType.painted, { posi: bo.posi });
+                }
+                keyBox.paintedCount += 2;
+                return true;
+            }
+            return false;
         }
 
         // 通过id来查找box
