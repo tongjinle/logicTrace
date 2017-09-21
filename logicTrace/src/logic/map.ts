@@ -372,6 +372,9 @@ namespace Logic {
                 return true;
             });
 
+            console.log(open);
+            return;
+
 
             open.forEach(bo => {
                 let onBox = bo;
@@ -418,7 +421,7 @@ namespace Logic {
                 paBox.sourceId = keyBox.id;
                 {
                     let bo = otherBox;
-                    this.boxList[bo.posi.y][bo.posi.x] = Box.create(boxType.painted, { posi: bo.posi });
+                    this.boxList[bo.posi.y][bo.posi.x] = Box.create(boxType.painted, { posi: bo.posi,sourceId:keyBox.id });
                 }
                 keyBox.paintedCount += 2;
                 return true;

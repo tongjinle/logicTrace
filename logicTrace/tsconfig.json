@@ -2,7 +2,8 @@
    "compilerOptions": {
       "target": "es5",
       "locale": "zh-CN",
-      "moduleResolution": "node"
+      "moduleResolution": "node",
+      "sourceMap":true
    },
    "include": [
       "src/**/*.ts"

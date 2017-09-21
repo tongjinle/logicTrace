@@ -153,12 +153,15 @@ namespace Client {
 				this.setChildIndex(line, 0);
 				this.lineList.push(line);
 			} else {
-				this.lineList.forEach((line, i) => {
+				for (var i = 0; i < this.lineList.length; ++i) {
+					let line = this.lineList[i];
+
 					if (line.is(from, to)) {
 						this.removeChild(line);
 						this.lineList.splice(i, 1);
+						i--;
 					}
-				});
+				}
 			}
 
 		}
