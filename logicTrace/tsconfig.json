@@ -1,14 +1,19 @@
 {
-   "compilerOptions": {
-      "target": "es5",
-      "locale": "zh-CN",
-      "moduleResolution": "node",
-      "sourceMap":true
-   },
-   "include": [
-      "src/**/*.ts"
-   ],
-   "exclude": [
-      "node_modules"
-   ]
+	"compilerOptions": {
+		"target": "es5",
+		"locale": "zh-CN",
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"lib": [
+			"es5",
+			"dom",
+			"es2015.promise"
+		]
+	},
+	"include": [
+		"src/**/*.ts"
+	],
+	"exclude": [
+		"node_modules"
+	]
 }
